@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "knowledge-ai": {
+      "command": "node",
+      "args": ["dist/mcp-server.js"],
+      "env": {}
+    }
+  }
+}

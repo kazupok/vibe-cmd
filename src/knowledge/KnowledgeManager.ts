@@ -1,5 +1,5 @@
 import * as fs from 'fs-extra';
-import * as path from 'path';
+import * as path from 'node:path';
 import { KnowledgeItem } from '../types';
 
 export class KnowledgeManager {

@@ -1,0 +1,280 @@
+// 値オブジェクトの実装例
+
+import { ValueObject } from '@/shared/base/ValueObject';
+import { Result } from '@/shared/base/Result';
+
+// シンプルな値オブジェクト - Email
+export class Email extends ValueObject<string> {
+  private static readonly EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  private constructor(value: string) {
+    super(value);
+  }
+
+  static create(value: string): Result<Email> {
+    if (!value) {
+      return Result.fail<Email>('Email cannot be empty');
+    }
+
+    const trimmedValue = value.trim().toLowerCase();
+
+    if (!this.EMAIL_REGEX.test(trimmedValue)) {
+      return Result.fail<Email>('Invalid email format');
+    }
+
+    return Result.ok<Email>(new Email(trimmedValue));
+  }
+
+  get value(): string {
+    return this._value;
+  }
+
+  getDomain(): string {
+    return this._value.split('@')[1];
+  }
+
+  getLocalPart(): string {
+    return this._value.split('@')[0];
+  }
+}
+
+// 複合値オブジェクト - DateRange
+interface IDateRangeProps {
+  startDate: Date;
+  endDate: Date;
+}
+
+export class DateRange extends ValueObject<IDateRangeProps> {
+  private constructor(props: IDateRangeProps) {
+    super(props);
+  }
+
+  static create(startDate: Date, endDate: Date): Result<DateRange> {
+    if (!startDate || !endDate) {
+      return Result.fail<DateRange>('Start date and end date are required');
+    }
+
+    if (startDate > endDate) {
+      return Result.fail<DateRange>('Start date must be before end date');
+    }
+
+    const props: IDateRangeProps = {
+      startDate: new Date(startDate),
+      endDate: new Date(endDate)
+    };
+
+    return Result.ok<DateRange>(new DateRange(props));
+  }
+
+  get startDate(): Date {
+    return new Date(this._value.startDate);
+  }
+
+  get endDate(): Date {
+    return new Date(this._value.endDate);
+  }
+
+  getDurationInDays(): number {
+    const diffInMs = this._value.endDate.getTime() - this._value.startDate.getTime();
+    return Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+  }
+
+  contains(date: Date): boolean {
+    return date >= this._value.startDate && date <= this._value.endDate;
+  }
+
+  overlaps(other: DateRange): boolean {
+    return this._value.startDate <= other.endDate && this._value.endDate >= other.startDate;
+  }
+}
+
+// 列挙型値オブジェクト - UserRole
+export class UserRole extends ValueObject<string> {
+  static readonly OWNER = new UserRole('owner');
+  static readonly ADMIN = new UserRole('admin');
+  static readonly EDITOR = new UserRole('editor');
+  static readonly VIEWER = new UserRole('viewer');
+
+  private static readonly VALID_ROLES = [
+    UserRole.OWNER.value,
+    UserRole.ADMIN.value,
+    UserRole.EDITOR.value,
+    UserRole.VIEWER.value
+  ];
+
+  private static readonly HIERARCHY: Record<string, number> = {
+    owner: 4,
+    admin: 3,
+    editor: 2,
+    viewer: 1
+  };
+
+  private constructor(value: string) {
+    super(value);
+  }
+
+  static create(value: string): Result<UserRole> {
+    if (!value) {
+      return Result.fail<UserRole>('Role cannot be empty');
+    }
+
+    const normalizedValue = value.toLowerCase();
+
+    if (!this.VALID_ROLES.includes(normalizedValue)) {
+      return Result.fail<UserRole>(`Invalid role: ${value}`);
+    }
+
+    return Result.ok<UserRole>(new UserRole(normalizedValue));
+  }
+
+  get value(): string {
+    return this._value;
+  }
+
+  hasHigherPrivilegeThan(other: UserRole): boolean {
+    return this.getHierarchyLevel() > other.getHierarchyLevel();
+  }
+
+  hasEqualOrHigherPrivilegeThan(other: UserRole): boolean {
+    return this.getHierarchyLevel() >= other.getHierarchyLevel();
+  }
+
+  private getHierarchyLevel(): number {
+    return UserRole.HIERARCHY[this._value];
+  }
+
+  canManageRole(targetRole: UserRole): boolean {
+    // Owner以外は自分より下位のロールのみ管理可能
+    if (this.equals(UserRole.OWNER)) {
+      return true;
+    }
+    return this.hasHigherPrivilegeThan(targetRole);
+  }
+}
+
+// カスタム検証を持つ値オブジェクト - APIKey
+export class APIKey extends ValueObject<string> {
+  private static readonly PREFIX = 'mtr_';
+  private static readonly KEY_LENGTH = 32;
+
+  private constructor(value: string) {
+    super(value);
+  }
+
+  static create(value?: string): Result<APIKey> {
+    if (value) {
+      // 既存のキーを検証
+      if (!value.startsWith(this.PREFIX)) {
+        return Result.fail<APIKey>('Invalid API key format');
+      }
+      return Result.ok<APIKey>(new APIKey(value));
+    }
+
+    // 新しいキーを生成
+    const key = this.generateKey();
+    return Result.ok<APIKey>(new APIKey(key));
+  }
+
+  private static generateKey(): string {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let key = this.PREFIX;
+    
+    for (let i = 0; i < this.KEY_LENGTH; i++) {
+      key += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    
+    return key;
+  }
+
+  get value(): string {
+    return this._value;
+  }
+
+  getPrefix(): string {
+    return this._value.substring(0, 4);
+  }
+
+  getLastFour(): string {
+    return this._value.substring(this._value.length - 4);
+  }
+
+  getMasked(): string {
+    const prefix = this.getPrefix();
+    const lastFour = this.getLastFour();
+    const maskedPart = '*'.repeat(this._value.length - 8);
+    return `${prefix}${maskedPart}${lastFour}`;
+  }
+}
+
+// 不変リストを持つ値オブジェクト - Tags
+export class Tags extends ValueObject<string[]> {
+  private static readonly MAX_TAGS = 10;
+  private static readonly MAX_TAG_LENGTH = 50;
+  private static readonly TAG_REGEX = /^[a-zA-Z0-9-_]+$/;
+
+  private constructor(value: string[]) {
+    super(value);
+  }
+
+  static create(tags: string[]): Result<Tags> {
+    if (!Array.isArray(tags)) {
+      return Result.fail<Tags>('Tags must be an array');
+    }
+
+    if (tags.length > this.MAX_TAGS) {
+      return Result.fail<Tags>(`Cannot have more than ${this.MAX_TAGS} tags`);
+    }
+
+    const normalizedTags: string[] = [];
+    const seen = new Set<string>();
+
+    for (const tag of tags) {
+      const normalized = tag.trim().toLowerCase();
+
+      if (!normalized) {
+        continue;
+      }
+
+      if (normalized.length > this.MAX_TAG_LENGTH) {
+        return Result.fail<Tags>(`Tag "${tag}" exceeds maximum length of ${this.MAX_TAG_LENGTH}`);
+      }
+
+      if (!this.TAG_REGEX.test(normalized)) {
+        return Result.fail<Tags>(`Tag "${tag}" contains invalid characters`);
+      }
+
+      if (!seen.has(normalized)) {
+        normalizedTags.push(normalized);
+        seen.add(normalized);
+      }
+    }
+
+    return Result.ok<Tags>(new Tags(normalizedTags));
+  }
+
+  get value(): string[] {
+    return [...this._value];
+  }
+
+  contains(tag: string): boolean {
+    return this._value.includes(tag.toLowerCase());
+  }
+
+  add(tag: string): Result<Tags> {
+    const newTags = [...this._value, tag];
+    return Tags.create(newTags);
+  }
+
+  remove(tag: string): Result<Tags> {
+    const newTags = this._value.filter(t => t !== tag.toLowerCase());
+    return Tags.create(newTags);
+  }
+
+  isEmpty(): boolean {
+    return this._value.length === 0;
+  }
+
+  count(): number {
+    return this._value.length;
+  }
+}

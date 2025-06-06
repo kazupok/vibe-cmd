@@ -1,0 +1,94 @@
+{
+  "commands": [
+    {
+      "domain_knowledge_commands": {
+        "description": "ドメイン知識のコマンドを読み込む",
+        "docs": [".knowledge-ai/commands/domain-knowledge-management.md"]
+      }
+    },
+    {
+      "task_implementation_commands": {
+        "description": "タスク実装のコマンドを読み込む",
+        "docs": [".knowledge-ai/commands/task-implementation.md"]
+      }
+    },
+    {
+      "code_analysis_commands": {
+        "description": "コード分析のコマンドを読み込む",
+        "docs": [".knowledge-ai/commands/code-analysis.md"]
+      }
+    },
+    {
+      "documentation_commands": {
+        "description": "ドキュメントのコマンドを読み込む",
+        "docs": [".knowledge-ai/commands/documentation.md"]
+      }
+    },
+    {
+      "get_team_templates": {
+        "description": "チーム固有のテンプレートを読み込む",
+        "docs": [".knowledge-ai/knowledge/templates/team/**/*.md"]
+      }
+    },
+    {
+      "code_review_commands": {
+        "description": "コードレビューのコマンドを読み込む",
+        "docs": [".knowledge-ai/commands/code-review.md"]
+      }
+    },
+    {
+      "command_management": {
+        "description": "コマンド管理のコマンドを読み込む",
+        "docs": [".knowledge-ai/commands/command-management.md"]
+      }
+    },
+    {
+      "get_project_templates": {
+        "description": "プロジェクト固有のテンプレートを読み込む",
+        "docs": [".knowledge-ai/knowledge/templates/project/**/*.md"]
+      }
+    },
+    {
+      "ai_development_workflow": {
+        "description": "AI駆動開発ワークフローのコマンドを読み込む",
+        "docs": [".knowledge-ai/commands/ai-development-workflow.md"]
+      }
+    },
+    {
+      "analyze_requirements": {
+        "description": "要件分析を実行する",
+        "docs": [".knowledge-ai/commands/analyze-requirements.md"]
+      }
+    },
+    {
+      "create_user_stories": {
+        "description": "ユーザーストーリーを作成する",
+        "docs": [".knowledge-ai/commands/create-user-stories.md"]
+      }
+    },
+    {
+      "implement_tdd": {
+        "description": "TDD実装を実行する",
+        "docs": [".knowledge-ai/commands/implement-tdd.md"]
+      }
+    },
+    {
+      "review_code": {
+        "description": "コードレビューを実施する",
+        "docs": [".knowledge-ai/commands/review-code.md"]
+      }
+    },
+    {
+      "generate_api_docs": {
+        "description": "API文書を生成する",
+        "docs": [".knowledge-ai/commands/generate-api-docs.md"]
+      }
+    },
+    {
+      "all_ai_commands": {
+        "description": "すべてのコマンドを読み込む",
+        "docs": [".knowledge-ai/commands/**/*.md"]
+      }
+    }
+  ]
+}

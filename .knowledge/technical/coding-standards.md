@@ -1,0 +1,289 @@
+# コーディング規約
+
+## 概要
+
+本プロジェクトでは、一貫性のある保守しやすいコードベースを維持するため、以下のコーディング規約を採用しています。
+
+## Lint & Formatter
+
+- biome.jsonを参照
+
+## TypeScript規約
+
+### 基本ルール
+
+- TypeScript strictモードを有効化
+- 明示的な型定義を推奨
+- `any`型の使用を禁止
+- `unknown`型を適切に使用
+
+### 命名規則
+
+```typescript
+// インターフェース：PascalCase + Iプレフィックス
+interface IUserRepository {}
+
+// クラス：PascalCase
+class UserService {}
+
+// 定数：UPPER_SNAKE_CASE
+const MAX_RETRY_COUNT = 3;
+
+// 関数・変数：camelCase
+const getUserById = (id: string) => {};
+const userName = "John";
+
+// 型エイリアス：PascalCase
+type UserId = string;
+
+// Enum：PascalCase（値はUPPER_SNAKE_CASE）
+enum UserRole {
+  ADMIN = "ADMIN",
+  USER = "USER",
+}
+```
+
+### ファイル構成
+
+```typescript
+// 1. Imports
+import { Entity } from "@/shared/base/Entity";
+
+// 2. Types/Interfaces
+interface IUserProps {
+  name: string;
+  email: string;
+}
+
+// 3. Constants
+const DEFAULT_ROLE = UserRole.USER;
+
+// 4. Main implementation
+export class User extends Entity<UserId> {
+  // Implementation
+}
+
+// 5. Helper functions
+function validateEmail(email: string): boolean {
+  // Implementation
+}
+```
+
+## ドメイン駆動設計の規約
+
+### エンティティ
+
+```typescript
+export class User extends Entity<UserId> {
+  private constructor(
+    id: UserId,
+    private props: IUserProps
+  ) {
+    super(id);
+  }
+
+  // ファクトリメソッド
+  static create(props: IUserProps): Result<User> {
+    // Validation logic
+    return Result.ok(new User(new UserId(), props));
+  }
+
+  // ゲッター（直接プロパティアクセスを避ける）
+  get name(): UserName {
+    return this.props.name;
+  }
+}
+```
+
+### 値オブジェクト
+
+```typescript
+export class Email extends ValueObject<string> {
+  private constructor(value: string) {
+    super(value);
+  }
+
+  static create(value: string): Result<Email> {
+    if (!this.isValid(value)) {
+      return Result.fail("Invalid email format");
+    }
+    return Result.ok(new Email(value));
+  }
+
+  private static isValid(value: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(value);
+  }
+}
+```
+
+### リポジトリ
+
+```typescript
+// インターフェース定義（ドメイン層）
+export interface IUserRepository {
+  findById(id: UserId): Promise<User | null>;
+  save(user: User): Promise<void>;
+  delete(id: UserId): Promise<void>;
+}
+
+// 実装（インフラ層）
+export class UserRepository implements IUserRepository {
+  constructor(private db: Database) {}
+
+  async findById(id: UserId): Promise<User | null> {
+    // Implementation
+  }
+}
+```
+
+## エラーハンドリング
+
+### Resultパターン
+
+```typescript
+export class Result<T> {
+  private constructor(
+    private readonly isSuccessful: boolean,
+    private readonly error?: string,
+    private readonly value?: T
+  ) {}
+
+  static ok<U>(value?: U): Result<U> {
+    return new Result<U>(true, undefined, value);
+  }
+
+  static fail<U>(error: string): Result<U> {
+    return new Result<U>(false, error);
+  }
+
+  isSuccess(): boolean {
+    return this.isSuccessful;
+  }
+
+  isFailure(): boolean {
+    return !this.isSuccessful;
+  }
+
+  getValue(): T {
+    if (!this.isSuccessful) {
+      throw new Error("Cannot get value from failed result");
+    }
+    return this.value as T;
+  }
+}
+```
+
+### カスタムエラー
+
+```typescript
+export abstract class DomainError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = this.constructor.name;
+  }
+}
+
+export class UserNotFoundError extends DomainError {
+  constructor(userId: string) {
+    super(`User with id ${userId} not found`);
+  }
+}
+```
+
+## テストコード規約
+
+### テストファイルの配置
+
+```
+src/
+├── domain/
+│   ├── User.ts
+│   └── __tests__/
+│       └── User.test.ts
+```
+
+### テストの構造
+
+```typescript
+describe("User", () => {
+  describe("create", () => {
+    it("should create a valid user", () => {
+      // Arrange
+      const props = { name: "John", email: "john@example.com" };
+
+      // Act
+      const result = User.create(props);
+
+      // Assert
+      expect(result.isSuccess()).toBe(true);
+    });
+
+    it("should fail with invalid email", () => {
+      // Test implementation
+    });
+  });
+});
+```
+
+## コミット規約
+
+### コミットメッセージ
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+### Type
+
+- `feat`: 新機能
+- `fix`: バグ修正
+- `docs`: ドキュメントのみの変更
+- `style`: コードの意味に影響しない変更
+- `refactor`: バグ修正や機能追加を伴わないコード変更
+- `test`: テストの追加や修正
+- `chore`: ビルドプロセスやツールの変更
+
+### 例
+
+```
+feat(user): ユーザー招待機能を追加
+
+- メール招待の実装
+- 招待リンクの有効期限設定
+- ロール指定機能
+
+Closes #123
+```
+
+## インポート順序
+
+1. Node.js built-in modules
+2. External modules
+3. Internal modules
+4. Relative imports
+5. Type imports
+
+```typescript
+// Node.js built-in
+import { readFile } from "fs/promises";
+
+// External
+import express from "express";
+import { z } from "zod";
+
+// Internal
+import { UserService } from "@/services/UserService";
+import { Logger } from "@/utils/Logger";
+
+// Relative
+import { User } from "./User";
+import { Email } from "../value-objects/Email";
+
+// Types
+import type { IUserRepository } from "./IUserRepository";
+```

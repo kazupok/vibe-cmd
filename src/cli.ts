@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
+import chalk from 'chalk';
 import { Command } from 'commander';
 import inquirer from 'inquirer';
-import chalk from 'chalk';
-import { ProjectManager } from './project/ProjectManager';
-import { KnowledgeManager } from './knowledge/KnowledgeManager';
-import { TaskManager } from './tasks/TaskManager';
 import { AIAssistant, MockAIProvider } from './ai/AIAssistant';
-import { ProjectConfig, TeamMember, Task, KnowledgeItem } from './types';
+import { KnowledgeManager } from './knowledge/KnowledgeManager';
+import { ProjectManager } from './project/ProjectManager';
+import { TaskManager } from './tasks/TaskManager';
+import { type KnowledgeItem, ProjectConfig, type Task, type TeamMember } from './types';
 
 const program = new Command();
 const projectManager = new ProjectManager();
@@ -15,10 +15,7 @@ const knowledgeManager = new KnowledgeManager();
 const taskManager = new TaskManager();
 const aiAssistant = new AIAssistant(new MockAIProvider());
 
-program
-  .name('kai')
-  .description('Knowledge AI - AI駆動開発支援ツール')
-  .version('1.0.0');
+program.name('kai').description('Knowledge AI - AI駆動開発支援ツール').version('1.0.0');
 
 program
   .command('init')
@@ -112,7 +109,11 @@ projectCommand
         { type: 'input', name: 'name', message: '名前:' },
         { type: 'input', name: 'role', message: '役割:' },
         { type: 'input', name: 'email', message: 'メールアドレス (任意):' },
-        { type: 'input', name: 'responsibilities', message: '責任範囲 (カンマ区切り):' },
+        {
+          type: 'input',
+          name: 'responsibilities',
+          message: '責任範囲 (カンマ区切り):',
+        },
       ]);
 
       const teamMember: TeamMember = {
@@ -162,7 +163,9 @@ taskCommand
 
     try {
       const createdTask = await taskManager.createTask(task);
-      console.log(chalk.green(`✅ タスク "${createdTask.title}" を作成しました (ID: ${createdTask.id})`));
+      console.log(
+        chalk.green(`✅ タスク "${createdTask.title}" を作成しました (ID: ${createdTask.id})`)
+      );
     } catch (error) {
       console.error(chalk.red('❌ タスク作成に失敗しました:'), error);
     }
@@ -180,18 +183,18 @@ taskCommand
       if (options.priority) filter.priority = options.priority;
 
       const tasks = await taskManager.getTasks(filter);
-      
+
       if (tasks.length === 0) {
         console.log(chalk.yellow('📝 タスクがありません'));
         return;
       }
 
       console.log(chalk.blue(`📋 タスク一覧 (${tasks.length}件)\n`));
-      
+
       for (const task of tasks) {
         const statusIcon = getStatusIcon(task.status);
         const priorityColor = getPriorityColor(task.priority);
-        
+
         console.log(`${statusIcon} ${chalk.bold(task.title)}`);
         console.log(`   ${priorityColor(task.priority.toUpperCase())} | ${task.status}`);
         if (task.assignee) {
@@ -245,20 +248,20 @@ knowledgeCommand
   .option('-c, --category <category>', 'カテゴリ')
   .action(async (options) => {
     try {
-      const searchQuery = options.query ? { text: options.query } : {};
+      const searchQuery: any = options.query ? { text: options.query } : {};
       if (options.category) {
         searchQuery.category = options.category;
       }
 
       const results = await knowledgeManager.searchKnowledge(searchQuery);
-      
+
       if (results.length === 0) {
         console.log(chalk.yellow('🔍 検索結果がありません'));
         return;
       }
 
       console.log(chalk.blue(`🔍 検索結果 (${results.length}件)\n`));
-      
+
       for (const item of results) {
         console.log(`📚 ${chalk.bold(item.title)}`);
         console.log(`   📂 ${item.category} | 👤 ${item.author}`);
@@ -281,24 +284,26 @@ aiCommand
     try {
       const projectConfig = await projectManager.loadConfig();
       if (!projectConfig) {
-        console.log(chalk.red('❌ プロジェクト設定が見つかりません。kai init を実行してください。'));
+        console.log(
+          chalk.red('❌ プロジェクト設定が見つかりません。kai init を実行してください。')
+        );
         return;
       }
 
       console.log(chalk.blue('🤖 AI による提案を生成しています...'));
-      
+
       const suggestions = await aiAssistant.generateProjectSuggestions(projectConfig);
-      
+
       console.log(chalk.green('\n✨ 提案されたタスク:'));
       for (const task of suggestions.tasks) {
         console.log(`• ${task.title} (${task.priority})`);
       }
-      
+
       console.log(chalk.yellow('\n📚 知識ギャップ:'));
       for (const gap of suggestions.knowledgeGaps) {
         console.log(`• ${gap}`);
       }
-      
+
       console.log(chalk.cyan('\n🔧 改善提案:'));
       for (const improvement of suggestions.improvements) {
         console.log(`• ${improvement}`);
@@ -329,22 +334,33 @@ aiCommand
 
 function getStatusIcon(status: Task['status']): string {
   switch (status) {
-    case 'todo': return '📋';
-    case 'in-progress': return '🔄';
-    case 'review': return '👀';
-    case 'done': return '✅';
-    case 'cancelled': return '❌';
-    default: return '❓';
+    case 'todo':
+      return '📋';
+    case 'in-progress':
+      return '🔄';
+    case 'review':
+      return '👀';
+    case 'done':
+      return '✅';
+    case 'cancelled':
+      return '❌';
+    default:
+      return '❓';
   }
 }
 
 function getPriorityColor(priority: Task['priority']) {
   switch (priority) {
-    case 'critical': return chalk.red.bold;
-    case 'high': return chalk.red;
-    case 'medium': return chalk.yellow;
-    case 'low': return chalk.green;
-    default: return chalk.gray;
+    case 'critical':
+      return chalk.red.bold;
+    case 'high':
+      return chalk.red;
+    case 'medium':
+      return chalk.yellow;
+    case 'low':
+      return chalk.green;
+    default:
+      return chalk.gray;
   }
 }
 

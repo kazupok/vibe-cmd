@@ -1,0 +1,45 @@
+{
+  "name": "knowledge-ai",
+  "version": "1.0.0",
+  "description": "AI駆動開発支援パッケージ - プロジェクト概要、社内ナレッジ、タスク管理を統合",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "lint": "biome lint src/",
+    "format": "biome format --write src/",
+    "check": "biome check src/",
+    "cli": "node dist/cli.js"
+  },
+  "keywords": [
+    "ai",
+    "development",
+    "knowledge-management",
+    "task-management",
+    "project-overview"
+  ],
+  "author": "Kazuki",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^9.4.1",
+    "inquirer": "^9.2.12",
+    "chalk": "^5.3.0",
+    "fs-extra": "^11.1.1",
+    "yaml": "^2.3.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/inquirer": "^9.0.3",
+    "@types/fs-extra": "^11.0.4",
+    "@types/jest": "^29.5.8",
+    "@biomejs/biome": "^1.4.1",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.3.2"
+  },
+  "bin": {
+    "kai": "./dist/cli.js"
+  }
+}

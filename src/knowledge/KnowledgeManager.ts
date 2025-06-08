@@ -1,11 +1,14 @@
-import * as fs from 'fs-extra';
 import * as path from 'node:path';
-import { KnowledgeItem } from '../types';
+import * as fs from 'fs-extra';
+import { glob } from 'glob';
+import type { KnowledgeItem, VibeDocsConfig, VibeDocsCommand } from '../types';
 
 export class KnowledgeManager {
   private knowledgeDir: string;
+  private projectRoot: string;
 
   constructor(projectRoot: string = process.cwd()) {
+    this.projectRoot = projectRoot;
     this.knowledgeDir = path.join(projectRoot, '.knowledge');
   }
 
@@ -15,7 +18,9 @@ export class KnowledgeManager {
     await fs.ensureDir(path.join(this.knowledgeDir, 'categories'));
   }
 
-  async addKnowledge(knowledge: Omit<KnowledgeItem, 'id' | 'createdAt' | 'updatedAt' | 'version'>): Promise<KnowledgeItem> {
+  async addKnowledge(
+    knowledge: Omit<KnowledgeItem, 'id' | 'createdAt' | 'updatedAt' | 'version'>
+  ): Promise<KnowledgeItem> {
     await this.initialize();
 
     const item: KnowledgeItem = {
@@ -35,7 +40,10 @@ export class KnowledgeManager {
     return item;
   }
 
-  async updateKnowledge(id: string, updates: Partial<Omit<KnowledgeItem, 'id' | 'createdAt' | 'version'>>): Promise<KnowledgeItem> {
+  async updateKnowledge(
+    id: string,
+    updates: Partial<Omit<KnowledgeItem, 'id' | 'createdAt' | 'version'>>
+  ): Promise<KnowledgeItem> {
     const item = await this.getKnowledge(id);
     if (!item) {
       throw new Error(`Knowledge item with id '${id}' not found.`);
@@ -68,7 +76,7 @@ export class KnowledgeManager {
     try {
       const filePath = path.join(this.knowledgeDir, 'items', `${id}.json`);
       if (await fs.pathExists(filePath)) {
-        const item = await fs.readJson(filePath) as KnowledgeItem;
+        const item = (await fs.readJson(filePath)) as KnowledgeItem;
         item.createdAt = new Date(item.createdAt);
         item.updatedAt = new Date(item.updatedAt);
         return item;
@@ -99,11 +107,11 @@ export class KnowledgeManager {
     author?: string;
   }): Promise<KnowledgeItem[]> {
     const allItems = await this.getAllKnowledge();
-    
-    return allItems.filter(item => {
+
+    return allItems.filter((item) => {
       if (query.text) {
         const searchText = query.text.toLowerCase();
-        const matchesText = 
+        const matchesText =
           item.title.toLowerCase().includes(searchText) ||
           item.content.toLowerCase().includes(searchText);
         if (!matchesText) return false;
@@ -114,9 +122,7 @@ export class KnowledgeManager {
       }
 
       if (query.tags && query.tags.length > 0) {
-        const hasMatchingTag = query.tags.some(tag => 
-          item.tags.includes(tag)
-        );
+        const hasMatchingTag = query.tags.some((tag) => item.tags.includes(tag));
         if (!hasMatchingTag) return false;
       }
 
@@ -133,7 +139,7 @@ export class KnowledgeManager {
       await this.initialize();
       const itemsDir = path.join(this.knowledgeDir, 'items');
       const files = await fs.readdir(itemsDir);
-      const jsonFiles = files.filter(file => file.endsWith('.json'));
+      const jsonFiles = files.filter((file) => file.endsWith('.json'));
 
       const items: KnowledgeItem[] = [];
       for (const file of jsonFiles) {
@@ -155,7 +161,7 @@ export class KnowledgeManager {
     try {
       const categoriesPath = path.join(this.knowledgeDir, 'categories', 'index.json');
       if (await fs.pathExists(categoriesPath)) {
-        const categories = await fs.readJson(categoriesPath) as Record<string, string[]>;
+        const categories = (await fs.readJson(categoriesPath)) as Record<string, string[]>;
         return Object.keys(categories);
       }
     } catch (error) {
@@ -168,7 +174,7 @@ export class KnowledgeManager {
     try {
       const tagsPath = path.join(this.knowledgeDir, 'tags', 'index.json');
       if (await fs.pathExists(tagsPath)) {
-        const tags = await fs.readJson(tagsPath) as Record<string, string[]>;
+        const tags = (await fs.readJson(tagsPath)) as Record<string, string[]>;
         return Object.keys(tags);
       }
     } catch (error) {
@@ -187,22 +193,22 @@ export class KnowledgeManager {
     let markdown = '# Knowledge Base\n\n';
     const categories = new Map<string, KnowledgeItem[]>();
 
-    allItems.forEach(item => {
+    for (const item of allItems) {
       if (!categories.has(item.category)) {
         categories.set(item.category, []);
       }
       categories.get(item.category)?.push(item);
-    });
+    }
 
     for (const [category, items] of categories) {
       markdown += `## ${category}\n\n`;
-      items.forEach(item => {
+      for (const item of items) {
         markdown += `### ${item.title}\n\n`;
         markdown += `**Author:** ${item.author}\n`;
         markdown += `**Tags:** ${item.tags.join(', ')}\n`;
         markdown += `**Last Updated:** ${item.updatedAt.toISOString().split('T')[0]}\n\n`;
         markdown += `${item.content}\n\n---\n\n`;
-      });
+      }
     }
 
     return markdown;
@@ -212,7 +218,11 @@ export class KnowledgeManager {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
   }
 
-  private async updateCategoryIndex(category: string, itemId: string, action: 'add' | 'remove' = 'add'): Promise<void> {
+  private async updateCategoryIndex(
+    category: string,
+    itemId: string,
+    action: 'add' | 'remove' = 'add'
+  ): Promise<void> {
     const categoriesPath = path.join(this.knowledgeDir, 'categories', 'index.json');
     let categories: Record<string, string[]> = {};
 
@@ -229,7 +239,7 @@ export class KnowledgeManager {
       }
     } else {
       if (categories[category]) {
-        categories[category] = categories[category].filter(id => id !== itemId);
+        categories[category] = categories[category].filter((id) => id !== itemId);
         if (categories[category].length === 0) {
           delete categories[category];
         }
@@ -240,7 +250,11 @@ export class KnowledgeManager {
     await fs.writeJson(categoriesPath, categories, { spaces: 2 });
   }
 
-  private async updateTagsIndex(tags: string[], itemId: string, action: 'add' | 'remove' = 'add'): Promise<void> {
+  private async updateTagsIndex(
+    tags: string[],
+    itemId: string,
+    action: 'add' | 'remove' = 'add'
+  ): Promise<void> {
     const tagsPath = path.join(this.knowledgeDir, 'tags', 'index.json');
     let tagsIndex: Record<string, string[]> = {};
 
@@ -258,7 +272,7 @@ export class KnowledgeManager {
         }
       } else {
         if (tagsIndex[tag]) {
-          tagsIndex[tag] = tagsIndex[tag].filter(id => id !== itemId);
+          tagsIndex[tag] = tagsIndex[tag].filter((id) => id !== itemId);
           if (tagsIndex[tag].length === 0) {
             delete tagsIndex[tag];
           }
@@ -268,5 +282,76 @@ export class KnowledgeManager {
 
     await fs.ensureDir(path.dirname(tagsPath));
     await fs.writeJson(tagsPath, tagsIndex, { spaces: 2 });
+  }
+
+  async loadVibeDocsConfig(): Promise<VibeDocsConfig | null> {
+    try {
+      const configPath = path.join(this.projectRoot, 'vibe-docs.config.json');
+      if (await fs.pathExists(configPath)) {
+        return await fs.readJson(configPath);
+      }
+    } catch (error) {
+      console.error('Error loading vibe-docs config:', error);
+    }
+    return null;
+  }
+
+  async getCommandDocs(commandName: string): Promise<string[]> {
+    const config = await this.loadVibeDocsConfig();
+    if (!config) {
+      return [];
+    }
+
+    // 各コマンドの配列から指定されたコマンドを検索
+    for (const commandGroup of config.commands) {
+      if (commandGroup[commandName]) {
+        const command = commandGroup[commandName];
+        const allDocs = await this.expandGlobPatterns(command.docs);
+        const ignoredDocs = command.ignoreDocs ? await this.expandGlobPatterns(command.ignoreDocs) : [];
+        
+        // ignoredDocsを除外
+        return allDocs.filter(doc => !ignoredDocs.includes(doc));
+      }
+    }
+
+    return [];
+  }
+
+  private async expandGlobPatterns(patterns: string[]): Promise<string[]> {
+    const expandedFiles: string[] = [];
+
+    for (const pattern of patterns) {
+      const absolutePattern = path.resolve(this.projectRoot, pattern);
+      try {
+        const files = await glob(absolutePattern, { 
+          nodir: true,
+          absolute: false 
+        });
+        expandedFiles.push(...files.map(file => path.relative(this.projectRoot, file)));
+      } catch (error) {
+        console.error(`Error expanding glob pattern ${pattern}:`, error);
+      }
+    }
+
+    return [...new Set(expandedFiles)]; // 重複除去
+  }
+
+  async readCommandDocuments(commandName: string): Promise<{ path: string; content: string }[]> {
+    const docPaths = await this.getCommandDocs(commandName);
+    const documents: { path: string; content: string }[] = [];
+
+    for (const docPath of docPaths) {
+      try {
+        const absolutePath = path.resolve(this.projectRoot, docPath);
+        if (await fs.pathExists(absolutePath)) {
+          const content = await fs.readFile(absolutePath, 'utf-8');
+          documents.push({ path: docPath, content });
+        }
+      } catch (error) {
+        console.error(`Error reading document ${docPath}:`, error);
+      }
+    }
+
+    return documents;
   }
 }

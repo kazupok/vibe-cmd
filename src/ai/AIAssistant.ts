@@ -1,4 +1,4 @@
-import { ProjectConfig, Task, KnowledgeItem, AIContext } from '../types';
+import type { AIContext, KnowledgeItem, ProjectConfig, Task } from '../types';
 
 export interface AIProvider {
   generateResponse(prompt: string, context?: AIContext): Promise<string>;
@@ -28,7 +28,7 @@ export class AIAssistant {
     }
 
     const tasks = await this.provider.suggestTasks(projectInfo);
-    
+
     const knowledgeGaps = this.identifyKnowledgeGaps(projectInfo);
     const improvements = this.suggestImprovements(projectInfo);
 
@@ -39,10 +39,7 @@ export class AIAssistant {
     };
   }
 
-  async generateCodeSuggestion(
-    description: string,
-    context: AIContext
-  ): Promise<string> {
+  async generateCodeSuggestion(description: string, context: AIContext): Promise<string> {
     if (!this.provider) {
       throw new Error('AI provider not configured');
     }
@@ -58,10 +55,7 @@ export class AIAssistant {
     return this.provider.reviewCode(code, context);
   }
 
-  async generateTaskDescription(
-    title: string,
-    context: AIContext
-  ): Promise<string> {
+  async generateTaskDescription(title: string, context: AIContext): Promise<string> {
     if (!this.provider) {
       return `Task: ${title}`;
     }
@@ -74,7 +68,7 @@ Project context:
 - Goals: ${context.projectInfo.goals.join(', ')}
 
 Recent tasks:
-${context.recentTasks.map(task => `- ${task.title} (${task.status})`).join('\n')}
+${context.recentTasks.map((task) => `- ${task.title} (${task.status})`).join('\n')}
 
 Provide a clear, actionable description with acceptance criteria.`;
 
@@ -84,12 +78,14 @@ Provide a clear, actionable description with acceptance criteria.`;
   async suggestKnowledgeItems(
     projectInfo: ProjectConfig,
     existingKnowledge: KnowledgeItem[]
-  ): Promise<Array<{
-    title: string;
-    category: string;
-    content: string;
-    tags: string[];
-  }>> {
+  ): Promise<
+    Array<{
+      title: string;
+      category: string;
+      content: string;
+      tags: string[];
+    }>
+  > {
     const suggestions: Array<{
       title: string;
       category: string;
@@ -97,7 +93,7 @@ Provide a clear, actionable description with acceptance criteria.`;
       tags: string[];
     }> = [];
 
-    const existingTitles = new Set(existingKnowledge.map(item => item.title.toLowerCase()));
+    const existingTitles = new Set(existingKnowledge.map((item) => item.title.toLowerCase()));
 
     for (const tech of projectInfo.technologies) {
       const setupTitle = `${tech} Setup Guide`;
@@ -142,29 +138,24 @@ Provide a clear, actionable description with acceptance criteria.`;
     return suggestions;
   }
 
-  async generateStandupReport(
-    tasks: Task[],
-    teamMember: string
-  ): Promise<string> {
-    const memberTasks = tasks.filter(task => task.assignee === teamMember);
-    
-    const yesterday = memberTasks.filter(task => 
-      task.status === 'done' && 
-      this.isWithinLastDay(task.updatedAt)
+  async generateStandupReport(tasks: Task[], teamMember: string): Promise<string> {
+    const memberTasks = tasks.filter((task) => task.assignee === teamMember);
+
+    const yesterday = memberTasks.filter(
+      (task) => task.status === 'done' && this.isWithinLastDay(task.updatedAt)
     );
 
-    const today = memberTasks.filter(task => 
-      task.status === 'in-progress' || 
-      (task.status === 'todo' && task.priority === 'high')
+    const today = memberTasks.filter(
+      (task) =>
+        task.status === 'in-progress' || (task.status === 'todo' && task.priority === 'high')
     );
 
-    const blockers = memberTasks.filter(task => 
-      task.dependencies.length > 0 || 
-      task.priority === 'critical'
+    const blockers = memberTasks.filter(
+      (task) => task.dependencies.length > 0 || task.priority === 'critical'
     );
 
     let report = `# Standup Report - ${teamMember}\n\n`;
-    
+
     report += '## Yesterday\n';
     if (yesterday.length > 0) {
       for (const task of yesterday) {
@@ -205,7 +196,7 @@ Provide a clear, actionable description with acceptance criteria.`;
     knowledge: KnowledgeItem[]
   ): Promise<string> {
     let summary = `# ${projectInfo.name} - Project Summary\n\n`;
-    
+
     summary += `${projectInfo.description}\n\n`;
 
     const taskStats = this.calculateTaskStats(tasks);
@@ -217,13 +208,13 @@ Provide a clear, actionable description with acceptance criteria.`;
 
     summary += '## Knowledge Base\n';
     summary += `- Total Articles: ${knowledge.length}\n`;
-    const categories = [...new Set(knowledge.map(item => item.category))];
+    const categories = [...new Set(knowledge.map((item) => item.category))];
     summary += `- Categories: ${categories.join(', ')}\n\n`;
 
     if (projectInfo.timeline?.milestones.length) {
       summary += '## Upcoming Milestones\n';
       const upcomingMilestones = projectInfo.timeline.milestones
-        .filter(milestone => milestone.status !== 'completed')
+        .filter((milestone) => milestone.status !== 'completed')
         .sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime())
         .slice(0, 3);
 
@@ -290,10 +281,10 @@ Provide a clear, actionable description with acceptance criteria.`;
     completionRate: number;
   } {
     const total = tasks.length;
-    const completed = tasks.filter(task => task.status === 'done').length;
-    const inProgress = tasks.filter(task => task.status === 'in-progress').length;
-    const remaining = tasks.filter(task => 
-      task.status === 'todo' || task.status === 'review'
+    const completed = tasks.filter((task) => task.status === 'done').length;
+    const inProgress = tasks.filter((task) => task.status === 'in-progress').length;
+    const remaining = tasks.filter(
+      (task) => task.status === 'todo' || task.status === 'review'
     ).length;
 
     return {
@@ -316,7 +307,7 @@ export class MockAIProvider implements AIProvider {
   }
 
   async reviewCode(code: string, context?: AIContext): Promise<string> {
-    return `Code review suggestions:\n- Consider adding error handling\n- Add unit tests\n- Improve code comments`;
+    return 'Code review suggestions:\n- Consider adding error handling\n- Add unit tests\n- Improve code comments';
   }
 
   async suggestTasks(projectInfo: ProjectConfig): Promise<Partial<Task>[]> {

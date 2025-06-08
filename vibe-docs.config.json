@@ -1,0 +1,70 @@
+{
+  "commands": [
+    {
+      "conflict_resolution_workflow": {
+        "description": "コンフリクト解消ワークフローを実行",
+        "docs": [
+          ".vibe-docs/commands/wf_コンフリクト解消.md",
+          ".vibe-docs/knowledge/guidelines/**/*.md"
+        ]
+      }
+    },
+    {
+      "task_implementation_workflow": {
+        "description": "タスク実装ワークフローを実行",
+        "docs": [
+          ".vibe-docs/commands/wf_タスク実装.md",
+          ".vibe-docs/domain/**/*.md",
+          ".vibe-docs/spec/**/*.md",
+          ".vibe-docs/knowledge/guidelines/**/*.md",
+          ".vibe-docs/knowledge/examples/**/*.md"
+        ]
+      }
+    },
+    {
+      "domain_knowledge_management_workflow": {
+        "description": "ドメイン知識管理ワークフローを実行",
+        "docs": [
+          ".vibe-docs/commands/wf_ドメイン知識管理.md",
+          ".vibe-docs/domain/**/*.md",
+          ".vibe-docs/spec/**/*.md",
+          ".vibe-docs/knowledge/guidelines/**/*.md"
+        ]
+      }
+    },
+    {
+      "get_all_domain_knowledge": {
+        "description": "すべてのドメイン知識を読み込む",
+        "docs": [".vibe-docs/domain/**/*.md"]
+      }
+    },
+    {
+      "get_technical_specs": {
+        "description": "技術仕様を読み込む",
+        "docs": [".vibe-docs/spec/**/*.md"]
+      }
+    },
+    {
+      "get_guidelines": {
+        "description": "開発ガイドラインを読み込む",
+        "docs": [".vibe-docs/knowledge/guidelines/**/*.md"]
+      }
+    },
+    {
+      "get_implementation_examples": {
+        "description": "実装例を読み込む",
+        "docs": [".vibe-docs/knowledge/examples/**/*.md"]
+      }
+    },
+    {
+      "get_all_vibe_docs": {
+        "description": "すべてのvibe-docs資料を読み込む",
+        "docs": [".vibe-docs/**/*.md"],
+        "ignoreDocs": [
+          ".vibe-docs/**/archive/**/*.md",
+          ".vibe-docs/**/deprecated/**/*.md"
+        ]
+      }
+    }
+  ]
+}

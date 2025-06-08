@@ -80,77 +80,23 @@ class KnowledgeAIMCPServer {
         ],
       };
     }
+    
     try {
-      const configPath = path.join(process.cwd(), 'vibe-docs.config.json');
-      const configContent = await fs.readFile(configPath, 'utf-8');
-      const config = JSON.parse(configContent);
-
-      const matchedCommands = config.commands.filter(
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        (cmd: Record<string, any>) => Object.keys(cmd)[0] === (args.command as string)
-      );
-
-      if (matchedCommands.length === 0) {
-        return {
-          content: [
-            {
-              type: 'text',
-              text: `コマンド "${args.command as string}" が見つかりませんでした`,
-            },
-          ],
-        };
-      }
-
-      let result = `コマンド "${args.command as string}" のドキュメント:\n\n`;
-      const loadedFiles: string[] = [];
-
-      for (const command of matchedCommands) {
-        const commandName = Object.keys(command)[0];
-        const commandData = command[commandName];
-        for (const docPattern of commandData.docs) {
-          try {
-            // グロブパターンを展開してファイルリストを取得
-            const files = await glob(docPattern.replace(/^\//, ''), {
-              cwd: process.cwd(),
-              absolute: true,
-            });
-
-            if (files.length === 0) {
-              result += `--- ${docPattern} ---\nパターンにマッチするファイルが見つかりません\n\n`;
-              continue;
-            }
-
-            for (const filePath of files) {
-              try {
-                const docContent = await fs.readFile(filePath, 'utf-8');
-                const relativePath = path.relative(process.cwd(), filePath);
-                loadedFiles.push(relativePath);
-                result += `--- ${relativePath} ---\n${docContent}\n\n`;
-              } catch (error) {
-                const relativePath = path.relative(process.cwd(), filePath);
-                result += `--- ${relativePath} ---\nファイルの読み込みに失敗: ${
-                  error instanceof Error ? error.message : String(error)
-                }\n\n`;
-              }
-            }
-          } catch (error) {
-            result += `--- ${docPattern} ---\nパターンの処理に失敗: ${
-              error instanceof Error ? error.message : String(error)
-            }\n\n`;
-          }
-        }
-      }
+      const { readCommandFiles } = await import('./utils/docs.js');
+      const { content, loadedFiles } = await readCommandFiles(args.command as string);
 
       const fileListText =
         loadedFiles.length > 0
           ? `\n読み込まれたファイル一覧 (${loadedFiles.length}個):\n${loadedFiles.map((f) => `- ${f}`).join('\n')}\n\n`
           : '\n読み込まれたファイルはありません\n\n';
 
+      const finalResult = `${fileListText}${content}\n**重要**: 読み込まれたファイルの内容を必ず確認してください。\n\n**指示**: 以下のファイルリストを確認し、必要に応じて個別にファイルを読み込んでください:\n${loadedFiles.map((f) => `- ${f}`).join('\n')}`;
+
       return {
         content: [
           {
             type: 'text',
-            text: fileListText + result,
+            text: finalResult,
           },
         ],
       };

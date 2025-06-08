@@ -4,6 +4,7 @@
   "description": "AI駆動開発支援パッケージ - プロジェクト概要、社内ナレッジ、タスク管理を統合",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -43,6 +44,6 @@
     "typescript": "^5.3.2"
   },
   "bin": {
-    "kai": "./dist/cli.js"
+    "vd": "./dist/cli.js"
   }
 }

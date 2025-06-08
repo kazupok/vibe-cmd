@@ -2,7 +2,6 @@
 
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { glob } from 'glob';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
@@ -10,13 +9,14 @@ import {
   ListToolsRequestSchema,
   type Tool,
 } from '@modelcontextprotocol/sdk/types.js';
+import { glob } from 'glob';
 
 class KnowledgeAIMCPServer {
   private server: Server;
 
   constructor() {
     this.server = new Server({
-      name: 'knowledge-ai',
+      name: 'vibe-docs-mcp',
       version: '1.0.0',
     });
 
@@ -31,13 +31,13 @@ class KnowledgeAIMCPServer {
           {
             name: 'read_knowledge',
             description:
-              '[$command$]の形式のコマンドがある場合、会話の最初に必ずこのコマンドを実行する。$は外したコマンド名に基づいてドキュメントを読み込み',
+              '[:command-name]の形式のコマンドがある場合、会話の最初に必ずこのコマンドを実行する。コロンは外したコマンド名に基づいてドキュメントを読み込み',
             inputSchema: {
               type: 'object',
               properties: {
                 command: {
                   type: 'string',
-                  description: '読み込むコマンド名($は外したコマンド)',
+                  description: '読み込むコマンド名(:コロンは外したコマンド名)',
                 },
               },
               required: ['command'],
@@ -81,12 +81,13 @@ class KnowledgeAIMCPServer {
       };
     }
     try {
-      const configPath = path.join(process.cwd(), 'knowledge-ai.json');
+      const configPath = path.join(process.cwd(), 'vibe-docs.config.json');
       const configContent = await fs.readFile(configPath, 'utf-8');
       const config = JSON.parse(configContent);
 
       const matchedCommands = config.commands.filter(
-        (cmd: { name: string; docs: string[] }) => cmd.name === (args.command as string)
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        (cmd: Record<string, any>) => Object.keys(cmd)[0] === (args.command as string)
       );
 
       if (matchedCommands.length === 0) {
@@ -101,16 +102,19 @@ class KnowledgeAIMCPServer {
       }
 
       let result = `コマンド "${args.command as string}" のドキュメント:\n\n`;
+      const loadedFiles: string[] = [];
 
       for (const command of matchedCommands) {
-        for (const docPattern of command.docs) {
+        const commandName = Object.keys(command)[0];
+        const commandData = command[commandName];
+        for (const docPattern of commandData.docs) {
           try {
             // グロブパターンを展開してファイルリストを取得
-            const files = await glob(docPattern.replace(/^\//, ''), { 
+            const files = await glob(docPattern.replace(/^\//, ''), {
               cwd: process.cwd(),
-              absolute: true 
+              absolute: true,
             });
-            
+
             if (files.length === 0) {
               result += `--- ${docPattern} ---\nパターンにマッチするファイルが見つかりません\n\n`;
               continue;
@@ -120,6 +124,7 @@ class KnowledgeAIMCPServer {
               try {
                 const docContent = await fs.readFile(filePath, 'utf-8');
                 const relativePath = path.relative(process.cwd(), filePath);
+                loadedFiles.push(relativePath);
                 result += `--- ${relativePath} ---\n${docContent}\n\n`;
               } catch (error) {
                 const relativePath = path.relative(process.cwd(), filePath);
@@ -136,11 +141,16 @@ class KnowledgeAIMCPServer {
         }
       }
 
+      const fileListText =
+        loadedFiles.length > 0
+          ? `\n読み込まれたファイル一覧 (${loadedFiles.length}個):\n${loadedFiles.map((f) => `- ${f}`).join('\n')}\n\n`
+          : '\n読み込まれたファイルはありません\n\n';
+
       return {
         content: [
           {
             type: 'text',
-            text: result,
+            text: fileListText + result,
           },
         ],
       };

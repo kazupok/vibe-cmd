@@ -22,7 +22,7 @@ export interface DocsResult {
 }
 
 export async function loadConfig(): Promise<any> {
-  const configPath = path.join(process.cwd(), 'vibe-docs.config.json');
+  const configPath = path.join(process.cwd(), 'vibe-flow.config.json');
   const configContent = await fs.readFile(configPath, 'utf-8');
   return JSON.parse(configContent);
 }

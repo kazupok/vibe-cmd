@@ -16,7 +16,7 @@ class KnowledgeAIMCPServer {
 
   constructor() {
     this.server = new Server({
-      name: 'vibe-docs-mcp',
+      name: 'vibe-flow-mcp',
       version: '1.0.0',
     });
 

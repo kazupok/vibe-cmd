@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "vibe-docs": {
+    "vibe-flow": {
       "command": "node",
       "args": ["dist/mcp-server.js"],
       "env": {}

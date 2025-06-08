@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import { Command } from 'commander';
 const program = new Command();
 
-program.name('vd').description('Vibe Docs - ドキュメント駆動開発支援ツール').version('1.0.0');
+program.name('vd').description('Vibe Flow - ドキュメント駆動開発支援ツール').version('1.0.0');
 
 
 const docsCommand = program.command('docs').description('ドキュメント管理');

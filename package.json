@@ -1,5 +1,5 @@
 {
-  "name": "vibe-docs",
+  "name": "vibe-flow",
   "version": "1.0.0",
   "description": "AI駆動開発支援パッケージ - プロジェクト概要、社内ナレッジ、タスク管理を統合",
   "main": "dist/index.js",

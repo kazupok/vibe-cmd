@@ -1,26 +1,39 @@
 {
   "commands": [
     {
-      "コンフリクト解消": {
-        "description": "コンフリクト解消ワークフローを実行",
-        "docs": [
-          ".vibe-docs/commands/コンフリクト解消.md",
-          ".vibe-docs/knowledge/guidelines/**/*.md"
-        ]
-      }
-    },
-    {
       "タスク実装": {
         "description": "タスク実装ワークフローを実行",
         "docs": [
           ".vibe-docs/commands/タスク実装.md",
           ".vibe-docs/domain/**/*.md",
           ".vibe-docs/spec/**/*.md",
-          ".vibe-docs/knowledge/guidelines/**/*.md",
-          ".vibe-docs/knowledge/examples/**/*.md"
+          ".vibe-docs/knowledge/dev/**/*.md"
         ]
       }
     },
+    {
+      "レビュー": {
+        "description": "レビュー用 AI プロンプト集",
+        "docs": [
+          ".vibe-docs/commands/レビュー.md",
+          ".vibe-docs/domain/**/*.md",
+          ".vibe-docs/spec/**/*.md",
+          ".vibe-docs/knowledge/dev/**/*.md"
+        ]
+      }
+    },
+    {
+      "コンフリクト解消": {
+        "description": "コンフリクト解消ワークフローを実行",
+        "docs": [
+          ".vibe-docs/commands/コンフリクト解消.md",
+          ".vibe-docs/domain/**/*.md",
+          ".vibe-docs/spec/**/*.md",
+          ".vibe-docs/knowledge/dev/**/*.md"
+        ]
+      }
+    },
+
     {
       "ドメイン知識管理": {
         "description": "ドメイン知識管理ワークフローを実行",
@@ -28,7 +41,7 @@
           ".vibe-docs/commands/ドメイン知識管理.md",
           ".vibe-docs/domain/**/*.md",
           ".vibe-docs/spec/**/*.md",
-          ".vibe-docs/knowledge/guidelines/**/*.md"
+          ".vibe-docs/knowledge/spec/**/*.md"
         ]
       }
     }

@@ -29,7 +29,7 @@ class KnowledgeAIMCPServer {
       return {
         tools: [
           {
-            name: 'read_knowledge',
+            name: 'read_docs',
             description:
               '[:command-name]の形式のコマンドがある場合、会話の最初に必ずこのコマンドを実行する。コロンは外したコマンド名に基づいてドキュメントを読み込み',
             inputSchema: {
@@ -50,7 +50,7 @@ class KnowledgeAIMCPServer {
     this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
       try {
         switch (request.params.name) {
-          case 'read_knowledge':
+          case 'read_docs':
             return await this.readKnowledge(request.params.arguments);
 
           default:
@@ -80,7 +80,7 @@ class KnowledgeAIMCPServer {
         ],
       };
     }
-    
+
     try {
       const { readCommandFiles } = await import('./utils/docs.js');
       const { content, loadedFiles } = await readCommandFiles(args.command as string);

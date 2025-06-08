@@ -94,33 +94,26 @@ export async function readCommandFiles(commandName: string): Promise<{
     throw new Error(`コマンド "${commandName}" が見つかりませんでした`);
   }
 
-  let result = `コマンド "${commandName}" のドキュメント:\n\n`;
   const loadedFiles: string[] = [];
 
   for (const command of docsResult.commands) {
     for (const pattern of command.patterns) {
       if (!pattern.exists) {
-        if (pattern.error) {
-          result += `--- ${pattern.pattern} ---\nパターンの処理に失敗: ${pattern.error}\n\n`;
-        } else {
-          result += `--- ${pattern.pattern} ---\nパターンにマッチするファイルが見つかりません\n\n`;
-        }
         continue;
       }
 
       for (const filePath of pattern.files) {
-        try {
-          const docContent = await fs.readFile(filePath, 'utf-8');
-          loadedFiles.push(filePath);
-          result += `--- ${filePath} ---\n${docContent}\n\n`;
-        } catch (error) {
-          result += `--- ${filePath} ---\nファイルの読み込みに失敗: ${
-            error instanceof Error ? error.message : String(error)
-          }\n\n`;
-        }
+        loadedFiles.push(filePath);
       }
     }
   }
+
+  const result = `コマンド "${commandName}" に関連するファイル (${loadedFiles.length}個):
+
+${loadedFiles.map(file => `- ${file}`).join('\n')}
+
+**重要**: 上記のファイルを必ず読み込んでから作業を開始してください。
+これらのファイルには "${commandName}" に関する重要な情報が含まれています。`;
 
   return {
     content: result,

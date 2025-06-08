@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "knowledge-ai": {
+    "vibe-docs": {
       "command": "node",
       "args": ["dist/mcp-server.js"],
       "env": {}

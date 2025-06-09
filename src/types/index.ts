@@ -1,9 +1,9 @@
-export interface VibeFlowCommand {
+export interface VibeCmdCommand {
   description: string;
   docs: string[];
   ignoreDocs?: string[];
 }
 
-export interface VibeFlowConfig {
-  commands: Record<string, VibeFlowCommand>[];
+export interface VibeCmdConfig {
+  commands: Record<string, VibeCmdCommand>[];
 }

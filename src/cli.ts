@@ -2,10 +2,75 @@
 
 import chalk from 'chalk';
 import { Command } from 'commander';
+import { existsSync, mkdirSync, copyFileSync, readdirSync, statSync } from 'fs';
+import { join, resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
 const program = new Command();
 
-program.name('vd').description('Vibe Flow - ドキュメント駆動開発支援ツール').version('1.0.0');
+program.name('vflow').description('Vibe Cmd - ドキュメント駆動開発支援ツール').version('0.0.1');
 
+// __dirname を ES Modules で取得
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// プロジェクトのルートディレクトリを取得
+const projectRoot = resolve(__dirname, '..');
+
+function copyDirectory(src: string, dest: string): void {
+  if (!existsSync(dest)) {
+    mkdirSync(dest, { recursive: true });
+  }
+
+  const entries = readdirSync(src);
+  for (const entry of entries) {
+    const srcPath = join(src, entry);
+    const destPath = join(dest, entry);
+    
+    if (statSync(srcPath).isDirectory()) {
+      copyDirectory(srcPath, destPath);
+    } else {
+      copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
+program
+  .command('init')
+  .description('現在のディレクトリにvibe-cmdの設定ファイルを初期化')
+  .action(async () => {
+    try {
+      const currentDir = process.cwd();
+      const configSource = join(projectRoot, 'vibe-cmd.config.json');
+      const vibeFlowDirSource = join(projectRoot, '.vibe-cmd');
+      
+      const configDest = join(currentDir, 'vibe-cmd.config.json');
+      const vibeFlowDirDest = join(currentDir, '.vibe-cmd');
+
+      // vibe-cmd.config.json をコピー
+      if (existsSync(configSource)) {
+        copyFileSync(configSource, configDest);
+        console.log(chalk.green('✅ vibe-cmd.config.json をコピーしました'));
+      } else {
+        console.log(chalk.yellow('⚠️  vibe-cmd.config.json が見つかりませんでした'));
+      }
+
+      // .vibe-cmd ディレクトリをコピー
+      if (existsSync(vibeFlowDirSource)) {
+        copyDirectory(vibeFlowDirSource, vibeFlowDirDest);
+        console.log(chalk.green('✅ .vibe-cmd ディレクトリをコピーしました'));
+      } else {
+        console.log(chalk.yellow('⚠️  .vibe-cmd ディレクトリが見つかりませんでした'));
+      }
+
+      console.log(chalk.blue('\n🎉 vibe-cmdの初期化が完了しました！'));
+      console.log(chalk.gray('以下のファイルが作成されました:'));
+      console.log(chalk.gray(`  - ${configDest}`));
+      console.log(chalk.gray(`  - ${vibeFlowDirDest}/`));
+    } catch (error) {
+      console.error(chalk.red('❌ 初期化に失敗しました:'), error);
+    }
+  });
 
 const docsCommand = program.command('docs').description('ドキュメント管理');
 
@@ -59,7 +124,7 @@ docsCommand
         }
 
         console.log(chalk.yellow('特定のコマンドの詳細を見るには:'));
-        console.log('  vd docs list --command <コマンド名>');
+        console.log('  vflow docs list --command <コマンド名>');
       }
     } catch (error) {
       console.error(chalk.red('❌ ドキュメント一覧の取得に失敗しました:'), error);

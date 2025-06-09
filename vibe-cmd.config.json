@@ -1,0 +1,49 @@
+{
+  "commands": [
+    {
+      "タスク実装": {
+        "description": "タスク実装ワークフローを実行",
+        "docs": [
+          ".vibe-cmd/commands/タスク実装.md",
+          ".vibe-cmd/domain/**/*.md",
+          ".vibe-cmd/spec/**/*.md",
+          ".vibe-cmd/knowledge/dev/**/*.md"
+        ]
+      }
+    },
+    {
+      "レビュー": {
+        "description": "レビュー用 AI プロンプト集",
+        "docs": [
+          ".vibe-cmd/commands/レビュー.md",
+          ".vibe-cmd/domain/**/*.md",
+          ".vibe-cmd/spec/**/*.md",
+          ".vibe-cmd/knowledge/dev/**/*.md"
+        ]
+      }
+    },
+    {
+      "コンフリクト解消": {
+        "description": "コンフリクト解消ワークフローを実行",
+        "docs": [
+          ".vibe-cmd/commands/コンフリクト解消.md",
+          ".vibe-cmd/domain/**/*.md",
+          ".vibe-cmd/spec/**/*.md",
+          ".vibe-cmd/knowledge/dev/**/*.md"
+        ]
+      }
+    },
+
+    {
+      "ドメイン知識管理": {
+        "description": "ドメイン知識管理ワークフローを実行",
+        "docs": [
+          ".vibe-cmd/commands/ドメイン知識管理.md",
+          ".vibe-cmd/domain/**/*.md",
+          ".vibe-cmd/spec/**/*.md",
+          ".vibe-cmd/knowledge/spec/**/*.md"
+        ]
+      }
+    }
+  ]
+}

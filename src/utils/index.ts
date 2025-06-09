@@ -44,7 +44,10 @@ export function formatDate(date: Date): string {
 }
 
 export function formatDateTime(date: Date): string {
-  return date.toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, '');
+  return date
+    .toISOString()
+    .replace('T', ' ')
+    .replace(/\.\d{3}Z$/, '');
 }
 
 export function generateId(): string {
@@ -75,20 +78,20 @@ export function groupBy<T, K extends string | number | symbol>(
   array: T[],
   keyFn: (item: T) => K
 ): Record<K, T[]> {
-  return array.reduce((groups, item) => {
-    const key = keyFn(item);
-    if (!groups[key]) {
-      groups[key] = [];
-    }
-    groups[key].push(item);
-    return groups;
-  }, {} as Record<K, T[]>);
+  return array.reduce(
+    (groups, item) => {
+      const key = keyFn(item);
+      if (!groups[key]) {
+        groups[key] = [];
+      }
+      groups[key].push(item);
+      return groups;
+    },
+    {} as Record<K, T[]>
+  );
 }
 
-export function debounce<T extends (...args: unknown[]) => unknown>(
-  func: T,
-  wait: number
-): T {
+export function debounce<T extends (...args: unknown[]) => unknown>(func: T, wait: number): T {
   let timeout: NodeJS.Timeout;
   return ((...args: Parameters<T>) => {
     clearTimeout(timeout);
@@ -96,16 +99,15 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
   }) as T;
 }
 
-export function throttle<T extends (...args: unknown[]) => unknown>(
-  func: T,
-  wait: number
-): T {
+export function throttle<T extends (...args: unknown[]) => unknown>(func: T, wait: number): T {
   let inThrottle: boolean;
   return ((...args: Parameters<T>) => {
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
-      setTimeout(() => (inThrottle = false), wait);
+      setTimeout(() => {
+        inThrottle = false;
+      }, wait);
     }
   }) as T;
 }

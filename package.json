@@ -1,10 +1,18 @@
 {
-  "name": "vibe-flow",
-  "version": "1.0.0",
+  "name": "vibe-cmd",
+  "version": "0.0.1",
   "description": "AI駆動開発支援パッケージ - プロジェクト概要、社内ナレッジ、タスク管理を統合",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -43,6 +51,6 @@
     "typescript": "^5.3.2"
   },
   "bin": {
-    "vd": "./dist/cli.js"
+    "vflow": "./dist/cli.js"
   }
 }

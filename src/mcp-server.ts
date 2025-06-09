@@ -16,8 +16,8 @@ class KnowledgeAIMCPServer {
 
   constructor() {
     this.server = new Server({
-      name: 'vibe-flow-mcp',
-      version: '1.0.0',
+      name: 'vibe-cmd-mcp',
+      version: '0.0.1',
     });
 
     this.setupToolHandlers();

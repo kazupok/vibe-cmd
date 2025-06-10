@@ -8,7 +8,7 @@ import { Command } from 'commander';
 
 const program = new Command();
 
-program.name('vcmd').description('Vibe Cmd - ドキュメント駆動開発支援ツール').version('0.0.6');
+program.name('vcmd').description('Vibe Cmd - ドキュメント駆動開発支援ツール').version('0.0.10');
 
 // __dirname を ES Modules で取得
 const __filename = fileURLToPath(import.meta.url);

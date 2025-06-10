@@ -33,6 +33,18 @@
         ]
       }
     },
+    {
+      "Issue作成": {
+        "description": "Issue作成ワークフローを実行",
+        "docs": [
+          ".vibe-cmd/commands/Issue作成.md",
+          ".vibe-cmd/domain/**/*.md",
+          ".vibe-cmd/spec/**/*.md",
+          ".vibe-cmd/knowledge/dev/**/*.md",
+          ".vibe-cmd/knowledge/spec/インタビュー技法.md"
+        ]
+      }
+    },
 
     {
       "ドメイン知識管理": {

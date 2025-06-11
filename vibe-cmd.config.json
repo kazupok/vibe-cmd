@@ -8,6 +8,17 @@
           ".vibe-cmd/domain/**/*.md",
           ".vibe-cmd/spec/**/*.md",
           ".vibe-cmd/knowledge/dev/**/*.md"
+        ],
+        "sub-commands": [
+          {
+            "name": "Issue",
+            "question": "どのIssueを実装しますか？"
+          },
+          {
+            "name": "実装内容",
+            "question": "なにをしますか？",
+            "answers": ["機能追加", "バグ修正", "リファクタリング"]
+          }
         ]
       }
     },
@@ -19,6 +30,13 @@
           ".vibe-cmd/domain/**/*.md",
           ".vibe-cmd/spec/**/*.md",
           ".vibe-cmd/knowledge/dev/**/*.md"
+        ],
+        "sub-commands": [
+          {
+            "name": "レビュー対象",
+            "question": "どのファイルやコードをレビューしますか？重点的にチェックしたい点があれば教えてください。",
+            "answers": ["コード", "設計", "ドキュメント"]
+          }
         ]
       }
     },

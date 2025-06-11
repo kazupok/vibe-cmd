@@ -1,10 +1,10 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { glob } from 'glob';
-import type { DocPattern, CommandDocs, DocsResult } from '../types/index.js';
+import type { DocPattern, CommandDocs, DocsResult, VibeCmdConfig } from '../types/index.js';
 import { CONFIG_FILE_NAME } from '../constants/index.js';
 
-export async function loadConfig(): Promise<any> {
+export async function loadConfig(): Promise<VibeCmdConfig> {
   const configPath = path.join(process.cwd(), CONFIG_FILE_NAME);
   const configContent = await fs.readFile(configPath, 'utf-8');
   return JSON.parse(configContent);
@@ -17,7 +17,7 @@ export async function getCommandDocs(commandName?: string): Promise<DocsResult> 
   
   if (commandName) {
     commandsToProcess = config.commands.filter(
-      (cmd: Record<string, any>) => Object.keys(cmd)[0] === commandName
+      (cmd: Record<string, unknown>) => Object.keys(cmd)[0] === commandName
     );
   }
 
@@ -58,6 +58,7 @@ export async function getCommandDocs(commandName?: string): Promise<DocsResult> 
       description: commandData.description || 'なし',
       patterns,
       totalFiles,
+      'sub-commands': commandData['sub-commands'],
     });
   }
 

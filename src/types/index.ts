@@ -1,7 +1,14 @@
+export interface SubCommand {
+  name: string;
+  question?: string;
+  answers?: string[];
+}
+
 export interface VibeCmdCommand {
   description: string;
   docs: string[];
   ignoreDocs?: string[];
+  'sub-commands'?: SubCommand[];
 }
 
 export interface VibeCmdConfig {
@@ -20,6 +27,7 @@ export interface CommandDocs {
   description: string;
   patterns: DocPattern[];
   totalFiles: number;
+  'sub-commands'?: SubCommand[];
 }
 
 export interface DocsResult {

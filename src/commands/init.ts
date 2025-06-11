@@ -66,7 +66,8 @@ export async function handleInitCommand(): Promise<void> {
       logWarning(MESSAGES.WARNING.DIR_NOT_FOUND_IN_SOURCE);
     }
 
-    // CLAUDE.md の処理
+    // CLAUDE.md の処理 (一時的に無効化)
+    /*
     const claudeMdPath = join(currentDir, CLAUDE_MD_FILE_NAME);
 
     if (existsSync(claudeMdPath)) {
@@ -87,7 +88,7 @@ export async function handleInitCommand(): Promise<void> {
       logSuccess(MESSAGES.SUCCESS.CLAUDE_MD_CREATED);
     }
 
-    // .cursor/rules/vibe-cmd.mdc の処理
+    // .cursor/rules/vibe-cmd.mdc の処理 (一時的に無効化)
     const cursorRulesDir = join(currentDir, CURSOR_RULES_DIR);
     const cursorVibeCmdPath = join(cursorRulesDir, CURSOR_RULES_FILE);
     
@@ -112,13 +113,12 @@ export async function handleInitCommand(): Promise<void> {
       writeFileSync(cursorVibeCmdPath, newContent, 'utf-8');
       logSuccess(MESSAGES.SUCCESS.CURSOR_RULES_CREATED);
     }
+    */
 
     logCelebration(`\n${MESSAGES.SUCCESS.INIT_COMPLETED}`);
     logGray('以下のファイルが作成/更新されました:');
     logGray(`  - ${configDest}`);
     logGray(`  - ${vibeCmdDirDest}/`);
-    logGray(`  - ${claudeMdPath}`);
-    logGray(`  - ${cursorVibeCmdPath}`);
   } catch (error) {
     handleError(MESSAGES.ERROR.INIT_FAILED, error);
   }

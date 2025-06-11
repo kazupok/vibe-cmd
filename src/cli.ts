@@ -7,7 +7,7 @@ import { handleInitCommand } from './commands/init.js';
 
 const program = new Command();
 
-program.name('vcmd').description('Vibe Cmd - ドキュメント駆動開発支援ツール').version('0.0.13');
+program.name('vcmd').description('Vibe Cmd - ドキュメント駆動開発支援ツール').version('0.0.14');
 
 program
   .command('init')
@@ -22,7 +22,7 @@ docsCommand
   .option('-c, --command <command>', '特定のコマンドのファイル一覧のみ表示')
   .action(handleDocsListCommand);
 
-program.command('cmd').description('コマンドを選択して実行').action(handleCmdCommand);
+program.command('cmd').description('コマンドを選択してClaude/Cursorで実行').action(handleCmdCommand);
 
 // Utility functions temporarily disabled
 // function getStatusIcon(status: Task['status']): string { ... }

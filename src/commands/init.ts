@@ -47,7 +47,9 @@ export async function handleInitCommand(): Promise<void> {
     const vibeCmdDirDest = join(currentDir, VIBE_CMD_DIR);
 
     // vibe-cmd.config.json をコピー
-    if (existsSync(configSource)) {
+    if (existsSync(configDest)) {
+      logWarning('vibe-cmd.config.json は既に存在します');
+    } else if (existsSync(configSource)) {
       copyFileSync(configSource, configDest);
       logSuccess(MESSAGES.SUCCESS.CONFIG_COPIED);
     } else {
@@ -55,7 +57,9 @@ export async function handleInitCommand(): Promise<void> {
     }
 
     // .vibe-cmd ディレクトリをコピー
-    if (existsSync(vibeCmdDirSource)) {
+    if (existsSync(vibeCmdDirDest)) {
+      logWarning('.vibe-cmd ディレクトリは既に存在します');
+    } else if (existsSync(vibeCmdDirSource)) {
       copyDirectory(vibeCmdDirSource, vibeCmdDirDest);
       logSuccess(MESSAGES.SUCCESS.DIR_COPIED);
     } else {

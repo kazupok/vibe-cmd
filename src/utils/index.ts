@@ -111,3 +111,11 @@ export function throttle<T extends (...args: unknown[]) => unknown>(func: T, wai
     }
   }) as T;
 }
+
+export function handleError(message: string, error: unknown): void {
+  console.error(message, error);
+}
+
+export function logError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}

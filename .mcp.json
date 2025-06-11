@@ -1,9 +1,8 @@
 {
   "mcpServers": {
     "vibe-cmd-mcp": {
-      "command": "node",
-      "args": ["dist/mcp-server.js"],
-      "env": {}
+      "command": "npx",
+      "args": ["--package=vibe-cmd", "vcmd-mcp"]
     }
   }
 }

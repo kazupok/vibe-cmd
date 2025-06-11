@@ -75,9 +75,13 @@ npx vcmd cmd
 `;
 
 export const CLAUDE_MD_TEMPLATE = (instruction: string) => `# Claude Code 用指示
+${instruction}`;
 
-このプロジェクトでは vibe-cmd を使用してドキュメント駆動開発を行います。${instruction}`;
+export const CURSOR_RULES_TEMPLATE = (instruction: string) => `---
+description: 
+globs: 
+alwaysApply: true
+---
 
-export const CURSOR_RULES_TEMPLATE = (instruction: string) => `# Cursor 用 vibe-cmd 指示
-
-このプロジェクトでは vibe-cmd を使用してドキュメント駆動開発を行います。${instruction}`;
+# Cursor 用 vibe-cmd 指示
+${instruction}`;

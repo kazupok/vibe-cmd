@@ -1,6 +1,6 @@
 {
   "name": "vibe-cmd",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "AI駆動開発支援パッケージ - プロジェクト概要、社内ナレッジ、タスク管理を統合",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

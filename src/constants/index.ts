@@ -1,12 +1,12 @@
-export const CONFIG_FILE_NAME = 'vibe-cmd.config.json';
+export const CONFIG_FILE_NAME = 'vc.config.json';
 export const CLAUDE_MD_FILE_NAME = 'CLAUDE.md';
 export const CURSOR_RULES_DIR = '.cursor/rules';
 export const CURSOR_RULES_FILE = 'vibe-cmd.mdc';
-export const VIBE_CMD_DIR = '.vibe-cmd';
+export const DEFAULT_VC_DIR = '.vc';
 
 export const MESSAGES = {
   ERROR: {
-    CONFIG_NOT_FOUND: 'vibe-cmd.config.json が見つかりません',
+    CONFIG_NOT_FOUND: 'vc.config.json が見つかりません',
     COMMAND_NOT_FOUND: (commandName: string) => `コマンド "${commandName}" が見つかりませんでした`,
     NO_COMMANDS_DEFINED: '設定ファイルにコマンドが定義されていません',
     INIT_FAILED: '初期化に失敗しました:',
@@ -15,7 +15,7 @@ export const MESSAGES = {
     CONFIG_LOAD_FAILED: '設定ファイルの読み込みに失敗しました:',
   },
   INFO: {
-    SUGGEST_INIT: 'vcmd init を実行して設定ファイルを作成してください',
+    SUGGEST_INIT: 'vc init を実行して設定ファイルを作成してください',
     SELECT_COMMAND: '実行するコマンドを選択してください:',
     SELECTED_COMMAND: (commandName: string) => `選択されたコマンド: ${commandName}`,
     DESCRIPTION: (description: string) => `説明: ${description}`,
@@ -26,20 +26,20 @@ export const MESSAGES = {
     COMMAND_LIST: '利用可能なコマンド一覧:',
     DOC_COUNT: (count: number) => `ドキュメント数: ${count}個`,
     DETAIL_COMMAND: '特定のコマンドの詳細を見るには:',
-    DETAIL_USAGE: 'vcmd docs list --command <コマンド名>',
+    DETAIL_USAGE: 'vc docs list --command <コマンド名>',
   },
   SUCCESS: {
-    CONFIG_COPIED: 'vibe-cmd.config.json をコピーしました',
-    DIR_COPIED: '.vibe-cmd ディレクトリをコピーしました',
+    CONFIG_COPIED: 'vc.config.json をコピーしました',
+    DIR_COPIED: 'ドキュメントディレクトリをコピーしました',
     CLAUDE_MD_UPDATED: 'CLAUDE.md にコマンド指示を追加しました',
     CLAUDE_MD_CREATED: 'CLAUDE.md を作成しました',
     CURSOR_RULES_UPDATED: '.cursor/rules/vibe-cmd.mdc にコマンド指示を追加しました',
     CURSOR_RULES_CREATED: '.cursor/rules/vibe-cmd.mdc を作成しました',
-    INIT_COMPLETED: 'vibe-cmdの初期化が完了しました！',
+    INIT_COMPLETED: 'vcの初期化が完了しました！',
   },
   WARNING: {
-    CONFIG_NOT_FOUND_IN_SOURCE: 'vibe-cmd.config.json が見つかりませんでした',
-    DIR_NOT_FOUND_IN_SOURCE: '.vibe-cmd ディレクトリが見つかりませんでした',
+    CONFIG_NOT_FOUND_IN_SOURCE: 'vc.config.json が見つかりませんでした',
+    DIR_NOT_FOUND_IN_SOURCE: 'ドキュメントディレクトリが見つかりませんでした',
     CLAUDE_MD_ALREADY_EXISTS: 'CLAUDE.md には既にコマンド指示が含まれています',
     CURSOR_RULES_ALREADY_EXISTS: '.cursor/rules/vibe-cmd.mdc には既にコマンド指示が含まれています',
     NO_MATCHING_FILES: (pattern: string) => `${pattern} (マッチするファイルなし)`,
@@ -64,7 +64,7 @@ export const VCMD_COMMAND_INSTRUCTION = `
 「:」と入力があった場合は以下を実行すること：
 
 \`\`\`
-npx vcmd cmd
+vc
 \`\`\`
 
 上記コマンド実行後、選択画面が表示されるので：

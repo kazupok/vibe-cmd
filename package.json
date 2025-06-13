@@ -1,6 +1,6 @@
 {
   "name": "vibe-cmd",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "AI駆動開発支援パッケージ - プロジェクト概要、社内ナレッジ、タスク管理を統合",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,8 +10,8 @@
   },
   "files": [
     "dist/**/*",
-    ".vibe-cmd/**/*",
-    "vibe-cmd.config.json",
+    ".vc/**/*",
+    "vc.config.json",
     "README.md",
     "LICENSE"
   ],
@@ -52,6 +52,6 @@
     "typescript": "^5.3.2"
   },
   "bin": {
-    "vcmd": "./dist/cli.js"
+    "vc": "./dist/cli.js"
   }
 }

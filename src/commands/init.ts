@@ -6,7 +6,7 @@ import {
   CLAUDE_MD_FILE_NAME, 
   CURSOR_RULES_DIR, 
   CURSOR_RULES_FILE, 
-  VIBE_CMD_DIR, 
+  DEFAULT_VC_DIR, 
   MESSAGES, 
   VCMD_COMMAND_INSTRUCTION, 
   CLAUDE_MD_TEMPLATE, 
@@ -41,14 +41,14 @@ export async function handleInitCommand(): Promise<void> {
   try {
     const currentDir = process.cwd();
     const configSource = join(projectRoot, CONFIG_FILE_NAME);
-    const vibeCmdDirSource = join(projectRoot, VIBE_CMD_DIR);
+    const vcDirSource = join(projectRoot, DEFAULT_VC_DIR);
 
     const configDest = join(currentDir, CONFIG_FILE_NAME);
-    const vibeCmdDirDest = join(currentDir, VIBE_CMD_DIR);
+    const vcDirDest = join(currentDir, DEFAULT_VC_DIR);
 
-    // vibe-cmd.config.json をコピー
+    // vc.config.json をコピー
     if (existsSync(configDest)) {
-      logWarning('vibe-cmd.config.json は既に存在します');
+      logWarning('vc.config.json は既に存在します');
     } else if (existsSync(configSource)) {
       copyFileSync(configSource, configDest);
       logSuccess(MESSAGES.SUCCESS.CONFIG_COPIED);
@@ -56,11 +56,11 @@ export async function handleInitCommand(): Promise<void> {
       logWarning(MESSAGES.WARNING.CONFIG_NOT_FOUND_IN_SOURCE);
     }
 
-    // .vibe-cmd ディレクトリをコピー
-    if (existsSync(vibeCmdDirDest)) {
-      logWarning('.vibe-cmd ディレクトリは既に存在します');
-    } else if (existsSync(vibeCmdDirSource)) {
-      copyDirectory(vibeCmdDirSource, vibeCmdDirDest);
+    // ドキュメントディレクトリをコピー
+    if (existsSync(vcDirDest)) {
+      logWarning('ドキュメントディレクトリは既に存在します');
+    } else if (existsSync(vcDirSource)) {
+      copyDirectory(vcDirSource, vcDirDest);
       logSuccess(MESSAGES.SUCCESS.DIR_COPIED);
     } else {
       logWarning(MESSAGES.WARNING.DIR_NOT_FOUND_IN_SOURCE);
@@ -118,7 +118,7 @@ export async function handleInitCommand(): Promise<void> {
     logCelebration(`\n${MESSAGES.SUCCESS.INIT_COMPLETED}`);
     logGray('以下のファイルが作成/更新されました:');
     logGray(`  - ${configDest}`);
-    logGray(`  - ${vibeCmdDirDest}/`);
+    logGray(`  - ${vcDirDest}/`);
   } catch (error) {
     handleError(MESSAGES.ERROR.INIT_FAILED, error);
   }

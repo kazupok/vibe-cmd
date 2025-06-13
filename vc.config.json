@@ -1,13 +1,14 @@
 {
+  "docsDirectory": ".vc",
   "commands": [
     {
       "タスク実装": {
         "description": "タスク実装ワークフローを実行",
         "docs": [
-          ".vibe-cmd/commands/タスク実装.md",
-          ".vibe-cmd/domain/**/*.md",
-          ".vibe-cmd/spec/**/*.md",
-          ".vibe-cmd/knowledge/dev/**/*.md"
+          ".vc/commands/タスク実装.md",
+          ".vc/domain/**/*.md",
+          ".vc/spec/**/*.md",
+          ".vc/knowledge/dev/**/*.md"
         ],
         "sub-commands": [
           {
@@ -26,10 +27,10 @@
       "レビュー": {
         "description": "レビュー用 AI プロンプト集",
         "docs": [
-          ".vibe-cmd/commands/レビュー.md",
-          ".vibe-cmd/domain/**/*.md",
-          ".vibe-cmd/spec/**/*.md",
-          ".vibe-cmd/knowledge/dev/**/*.md"
+          ".vc/commands/レビュー.md",
+          ".vc/domain/**/*.md",
+          ".vc/spec/**/*.md",
+          ".vc/knowledge/dev/**/*.md"
         ],
         "sub-commands": [
           {
@@ -44,10 +45,10 @@
       "コンフリクト解消": {
         "description": "コンフリクト解消ワークフローを実行",
         "docs": [
-          ".vibe-cmd/commands/コンフリクト解消.md",
-          ".vibe-cmd/domain/**/*.md",
-          ".vibe-cmd/spec/**/*.md",
-          ".vibe-cmd/knowledge/dev/**/*.md"
+          ".vc/commands/コンフリクト解消.md",
+          ".vc/domain/**/*.md",
+          ".vc/spec/**/*.md",
+          ".vc/knowledge/dev/**/*.md"
         ]
       }
     },
@@ -55,11 +56,11 @@
       "Issue作成": {
         "description": "Issue作成ワークフローを実行",
         "docs": [
-          ".vibe-cmd/commands/Issue作成.md",
-          ".vibe-cmd/domain/**/*.md",
-          ".vibe-cmd/spec/**/*.md",
-          ".vibe-cmd/knowledge/dev/**/*.md",
-          ".vibe-cmd/knowledge/spec/インタビュー技法.md"
+          ".vc/commands/Issue作成.md",
+          ".vc/domain/**/*.md",
+          ".vc/spec/**/*.md",
+          ".vc/knowledge/dev/**/*.md",
+          ".vc/knowledge/spec/インタビュー技法.md"
         ]
       }
     },
@@ -68,10 +69,10 @@
       "ドメイン知識管理": {
         "description": "ドメイン知識管理ワークフローを実行",
         "docs": [
-          ".vibe-cmd/commands/ドメイン知識管理.md",
-          ".vibe-cmd/domain/**/*.md",
-          ".vibe-cmd/spec/**/*.md",
-          ".vibe-cmd/knowledge/spec/**/*.md"
+          ".vc/commands/ドメイン知識管理.md",
+          ".vc/domain/**/*.md",
+          ".vc/spec/**/*.md",
+          ".vc/knowledge/spec/**/*.md"
         ]
       }
     }

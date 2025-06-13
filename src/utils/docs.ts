@@ -2,12 +2,16 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { glob } from 'glob';
 import type { DocPattern, CommandDocs, DocsResult, VibeCmdConfig } from '../types/index.js';
-import { CONFIG_FILE_NAME } from '../constants/index.js';
+import { CONFIG_FILE_NAME, DEFAULT_VC_DIR } from '../constants/index.js';
 
 export async function loadConfig(): Promise<VibeCmdConfig> {
   const configPath = path.join(process.cwd(), CONFIG_FILE_NAME);
   const configContent = await fs.readFile(configPath, 'utf-8');
   return JSON.parse(configContent);
+}
+
+export function getDocsDirectory(config?: VibeCmdConfig): string {
+  return config?.docsDirectory || DEFAULT_VC_DIR;
 }
 
 export async function getCommandDocs(commandName?: string): Promise<DocsResult> {

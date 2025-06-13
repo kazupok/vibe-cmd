@@ -13,6 +13,7 @@ export interface VibeCmdCommand {
 
 export interface VibeCmdConfig {
   commands: Record<string, VibeCmdCommand>[];
+  docsDirectory?: string;
 }
 
 export interface DocPattern {

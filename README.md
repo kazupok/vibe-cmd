@@ -13,21 +13,15 @@ npm install -g vibe-cmd
 ### 1. 初期化
 
 ```bash
-vcmd init
+vc init
 ```
 
-プロジェクトに設定ファイル（`vibe-cmd.config.json`）と必要なディレクトリ（`.vibe-cmd/`）を作成します。
+プロジェクトに設定ファイル（`vc.config.json`）と必要なディレクトリ（`.vc/`）を作成します。
 
 ### 2. メインコマンド実行
 
 ```bash
-npx vcmd cmd
-```
-
-または
-
-```bash
-vcmd cmd
+vc
 ```
 
 このコマンドを実行すると：
@@ -37,18 +31,19 @@ vcmd cmd
 3. **アシスタント選択** - Claude CodeまたはCursorを選択
 4. **自動実行** - 選択したAIツールで@ファイル参照付きでコマンドが実行される
 
-## 設定ファイル（vibe-cmd.config.json）
+## 設定ファイル（vc.config.json）
 
 ```json
 {
+  "docsDirectory": ".vc",
   "commands": [
     {
       "コマンド名": {
         "description": "コマンドの説明",
         "docs": [
-          ".vibe-cmd/commands/コマンド名.md",
-          ".vibe-cmd/domain/**/*.md",
-          ".vibe-cmd/spec/**/*.md"
+          ".vc/commands/コマンド名.md",
+          ".vc/domain/**/*.md",
+          ".vc/spec/**/*.md"
         ],
         "sub-commands": [
           {
@@ -69,6 +64,7 @@ vcmd cmd
 
 ### 設定項目
 
+- **docsDirectory**: ドキュメントディレクトリ名（デフォルト: `.vc`）
 - **description**: コマンドの説明
 - **docs**: 参照するドキュメントファイルのパス（glob形式対応）
 - **sub-commands**: サブコマンドの配列（オプション）
@@ -80,20 +76,20 @@ vcmd cmd
 
 ```bash
 # 全コマンドの一覧表示
-vcmd docs list
+vc docs list
 
 # 特定のコマンドのドキュメント表示
-vcmd docs list --command <コマンド名>
+vc docs list --command <コマンド名>
 ```
 
 ## 使用例
 
 ```bash
 # 1. プロジェクトを初期化
-vcmd init
+vc init
 
 # 2. メインコマンドを実行
-npx vcmd cmd
+vc
 
 # 3. 対話式でコマンドとサブコマンドを選択
 # 4. Claude CodeまたはCursorが自動起動

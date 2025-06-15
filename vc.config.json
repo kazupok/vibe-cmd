@@ -4,8 +4,8 @@
     {
       "タスク実装": {
         "description": "タスク実装ワークフローを実行",
+        "inlineDocs": [".vc/commands/タスク実装.md"],
         "docs": [
-          ".vc/commands/タスク実装.md",
           ".vc/domain/**/*.md",
           ".vc/spec/**/*.md",
           ".vc/knowledge/dev/**/*.md"

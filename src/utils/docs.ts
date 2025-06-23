@@ -142,7 +142,7 @@ export async function getCommandDocs(commandName?: string): Promise<DocsResult> 
       patterns,
       totalFiles,
       'sub-commands': commandData['sub-commands'],
-      inlineDocs: inlineFiles,
+      inlineDocs: commandData.inlineDocs,
       preCommands: commandData.preCommands,
     });
   }

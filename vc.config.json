@@ -4,10 +4,14 @@
     {
       "タスク実装": {
         "description": "タスク実装ワークフローを実行",
+        "preCommands": [
+          "chmod +x ./.scripts/pull_develop.sh",
+          "./.scripts/pull_develop.sh"
+        ],
         "docs": [
           ".vc/commands/タスク実装.md",
           ".vc/domain/**/*.md",
-          ".vc/spec/**/*.md",
+          ".vc/spec/アーキテクチャ.md",
           ".vc/knowledge/dev/**/*.md"
         ],
         "sub-commands": [
@@ -16,9 +20,17 @@
             "question": "どのIssueを実装しますか？"
           },
           {
+            "name": "対象範囲",
+            "question": "対象範囲を入力してください。",
+            "answers": [
+              { "label": "FE", "docs": [".vc/spec/フロントエンド仕様.md"] },
+              "BE"
+            ]
+          },
+          {
             "name": "実装内容",
             "question": "なにをしますか？",
-            "answers": ["機能追加", "バグ修正", "リファクタリング"]
+            "answers": ["機能実装", "バグ修正", "リファクタリング"]
           }
         ]
       }
@@ -68,11 +80,22 @@
     {
       "ドメイン知識管理": {
         "description": "ドメイン知識管理ワークフローを実行",
+        "inlineDocs": [".vc/commands/ドメイン知識管理.md"],
         "docs": [
-          ".vc/commands/ドメイン知識管理.md",
           ".vc/domain/**/*.md",
           ".vc/spec/**/*.md",
           ".vc/knowledge/spec/**/*.md"
+        ]
+      }
+    },
+    {
+      "技術仕様管理": {
+        "description": "技術仕様管理ワークフローを実行",
+        "docs": [
+          ".vc/commands/技術仕様管理.md",
+          ".vc/domain/**/*.md",
+          ".vc/knowledge/spec/**/*.md",
+          ".vc/spec/**/*.md"
         ]
       }
     }

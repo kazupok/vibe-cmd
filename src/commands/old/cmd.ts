@@ -2,16 +2,16 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import inquirer from 'inquirer';
 import { CONFIG_FILE_NAME, MESSAGES } from '../../constants/index.js';
-import { 
-  logError, 
-  logWarning, 
-  logChart, 
-  formatSelectedCommand, 
-  formatDescription, 
-  formatPatternSuccess, 
-  formatFileSuccess, 
-  formatPatternError, 
-  formatPatternWarning 
+import {
+  formatDescription,
+  formatFileSuccess,
+  formatPatternError,
+  formatPatternSuccess,
+  formatPatternWarning,
+  formatSelectedCommand,
+  logChart,
+  logError,
+  logWarning,
 } from '../../utils/console.js';
 import { handleError } from '../../utils/index.js';
 

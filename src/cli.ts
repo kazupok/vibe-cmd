@@ -7,7 +7,7 @@ import { handleInitCommand } from './commands/init.js';
 
 const program = new Command();
 
-program.name('vc').description('Vibe Cmd - ドキュメント駆動開発支援ツール').version('0.0.17');
+program.name('vc').description('Vibe Cmd - ドキュメント駆動開発支援ツール').version('0.0.18');
 
 program
   .command('init')
